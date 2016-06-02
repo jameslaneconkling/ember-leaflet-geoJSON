@@ -5,7 +5,8 @@ module.exports = {
     return this.addBowerPackagesToProject([
       {name: 'leaflet'},
       {name: 'leaflet-draw'},
-      {name: 'leaflet.markercluster'}
+      {name: 'leaflet.markercluster'},
+      {name: 'lodash'}
     ]);
   }
 };

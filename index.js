@@ -6,6 +6,10 @@ module.exports = {
 
   included: function(app) {
     this._super.included(app);
+    app.import('vendor/umd-shims.js');
+
+    app.import(app.bowerDirectory + '/lodash/dist/lodash.js');
+
     app.import(app.bowerDirectory + '/leaflet/dist/leaflet-src.js');
     app.import(app.bowerDirectory + '/leaflet-draw/dist/leaflet.draw.js');
     app.import(app.bowerDirectory + '/leaflet.markercluster/dist/leaflet.markercluster.js');
