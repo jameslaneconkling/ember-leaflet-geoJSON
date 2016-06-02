@@ -1,9 +1,0 @@
-{{#if didInsertMap}}
-  {{yield (hash
-    geoJSONLayer=(component 'geojson-layer' map=this.map icon=this.icon polygonStyle=this.polygonStyle)
-    clusterLayer=(component 'cluster-layer' map=this.map icon=this.icon polygonStyle=this.polygonStyle)
-    tileLayer=(component 'tile-layer' map=this.map)
-    layerControl=(component 'layer-control' map=this.map)
-    drawControl=(component 'draw-control' map=this.map icon=this.icon polygonStyle=this.polygonStyle)
-  )}}
-{{/if}}

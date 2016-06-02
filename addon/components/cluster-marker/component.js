@@ -1,7 +1,6 @@
 import Ember                     from 'ember';
 import layout                    from './template';
 import L                         from 'leaflet';
-import computed, {on}            from 'ember-computed-decorators';
 
 /**
  * @param {geoJSON} geoJSON  the marker geoJSON
@@ -24,8 +23,7 @@ export default Ember.Component.extend({
   mouseEnter() {/*noop*/},
   mouseLeave() {/*noop*/},
 
-  @on('didInitAttrs')
-  _init() {
+  _init: Ember.on('didInitAttrs', function() {
     Ember.assert(`
       Component initialized without a MarkerClusterGroup.
       Ensure it was declared as a contextual component w/i the cluster-layer component block scope, like so:
@@ -37,24 +35,23 @@ export default Ember.Component.extend({
 
     Ember.assert('Map Cluster Marker component cannot be initialized before cluster-layer component is initialized', !!this.get('clusterLayer'));
 
-    let geoJSONLayer = new L.GeoJSON(this.get('geoJSON') || null, {
+    const geoJSONLayer = new L.GeoJSON(this.get('geoJSON') || null, {
       style: feature => this.get('polygonStyle'),
       pointToLayer: (feature, latLng) => new L.Marker(latLng, {icon: this.get('icon')})
     });
     this.set('geoJSONLayer', geoJSONLayer);
     this.set('clusterMarkers', this.layer2clusterMarkers(geoJSONLayer));
-  },
+  }),
 
-  @on('didInsertElement')
-  _setupMarker() {
-    let clusterMarkers = this.get('clusterMarkers');
+  _setupMarker: Ember.on('didInsertElement', function() {
+    const clusterMarkers = this.get('clusterMarkers');
     clusterMarkers.forEach(geoJSONLayer => {
       geoJSONLayer.on('mouseover', () => this._mouseEnter(geoJSONLayer));
       geoJSONLayer.on('mouseout', () => this._mouseLeave(geoJSONLayer));
       geoJSONLayer.on('mousedown', () => this._mouseDown(geoJSONLayer));
       geoJSONLayer.on('click', () => this._mouseUp(geoJSONLayer));
 
-      let popupContent = this.$('._marker-component-popup').html().replace(/<!--.*-->/g, '').replace(/\s/g, '');
+      const popupContent = this.$('._marker-component-popup').html().replace(/<!--.*-->/g, '').replace(/\s/g, '');
 
       if (popupContent) {
         // don't bind popup if content isn't defined
@@ -64,25 +61,24 @@ export default Ember.Component.extend({
 
     this.get('clusterLayer').addLayers(clusterMarkers)
     this.get('addLayer')(this.get('geoJSONLayer'), clusterMarkers, this.get('map'));
-  },
+  }),
 
-  @on('willDestroyElement')
-  _teardown() {
-    let clusterMarkers = this.get('clusterMarkers');
+  _teardown: Ember.on('willDestroyElement', function() {
+    const clusterMarkers = this.get('clusterMarkers');
     this.get('clusterLayer').removeLayers(clusterMarkers);
 
     this.get('removeLayer')(this.get('geoJSONLayer'), clusterMarkers, this.get('map'));
-  },
+  }),
 
   layer2clusterMarkers(leafletLayer) {
-    let clusterMarkers = [];
+    const clusterMarkers = [];
 
     leafletLayer.eachLayer(layer => {
       // NOTE - handling multigeometries is pretty naieve right now: will put one marker at the center of the entire collection.
       //        the other option would be to put markers on each featre in the multigeometry
-      let layerType = layer.feature.geometry.type;
-      let markerLatLng = layerType === 'Point' ? layer.getLatLng() : layer.getBounds().getCenter();
-      let clusterMarker = new L.Marker(markerLatLng, {
+      const layerType = layer.feature.geometry.type;
+      const markerLatLng = layerType === 'Point' ? layer.getLatLng() : layer.getBounds().getCenter();
+      const clusterMarker = new L.Marker(markerLatLng, {
         icon: this.get('icon'),
         __featureGeom: layer,
       });

@@ -1,14 +1,12 @@
 import Ember                     from 'ember';
 import layout                    from './template';
-import {on}                      from 'ember-computed-decorators';
 import L                         from 'leaflet';
 
 export default Ember.Component.extend({
   layout,
   tagName: '',
 
-  @on('didInitAttrs')
-  _initLayer() {
+  _initLayer: Ember.on('didInitAttrs', function() {
     Ember.assert(`
       Component initialized without a map.
       Ensure it was declared as a contextual component w/i the leaflet-map component block scope, like so:
@@ -18,9 +16,9 @@ export default Ember.Component.extend({
 
     this.set('tileLayer', L.tileLayer(this.get('tileUrl')));
     this.get('map').addLayer(this.get('tileLayer'));
-  },
+  }),
 
-  willDestroyElement() {
+  _teardown: Ember.on('willDestroyElement', function() {
     this.get('map').removeLayer(this.get('tileLayer'));
-  }
+  })
 });

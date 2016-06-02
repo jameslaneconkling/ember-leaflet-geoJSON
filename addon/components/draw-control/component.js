@@ -2,7 +2,6 @@ import Ember                   from 'ember';
 import layout                  from './template';
 import L                       from 'leaflet';
 import _                       from 'lodash';
-import computed, {on}          from 'ember-computed-decorators';
 import {isGeometryCollection}  from '../../utils/features';
 
 /**
@@ -40,8 +39,7 @@ export default Ember.Component.extend({
   updatedShapes() {/*noop*/},
   deleteShapes() {/*noop*/},
 
-  @on('didInitAttrs')
-  _init() {
+  _init: Ember.on('didInitAttrs', function() {
     Ember.assert(`Could not find leaflet-draw constructor.  Make sure the plugin has been successfully loaded.`, !!L.Control.Draw);
     Ember.assert(`
       Component initialized without a map.
@@ -50,17 +48,17 @@ export default Ember.Component.extend({
           {{map.drawControl}}
         {{/leaflet-map}}`, this.get('map') instanceof L.Map);
 
-    let map = this.get('map');
-    let drawnFeatures = new L.GeoJSON(this.get('geoJSON') || null, {
+    const map = this.get('map');
+    const drawnFeatures = new L.GeoJSON(this.get('geoJSON') || null, {
       style: feature => this.get('polygonStyle'),
       pointToLayer: (feature, latLng) => new L.Marker(latLng, {icon: this.get('icon')})
     });
-    let bounds = drawnFeatures.getBounds();
+    const bounds = drawnFeatures.getBounds();
     if (bounds.isValid()) {
       this.get('map').fitBounds(bounds);
     }
 
-    let drawOptions = {
+    const drawOptions = {
       edit: {
         featureGroup: drawnFeatures
       },
@@ -83,7 +81,7 @@ export default Ember.Component.extend({
         }
       })
     };
-    let drawControls = new L.Control.Draw(drawOptions);
+    const drawControls = new L.Control.Draw(drawOptions);
 
     this.setProperties({
       drawControls,
@@ -96,32 +94,30 @@ export default Ember.Component.extend({
 
     map.addControl(drawControls);
     map.addLayer(drawnFeatures);
-  },
+  }),
 
-  @on('didUpdateAttrs')
-  _update() {
+  _update: Ember.on('didUpdateAttrs', function() {
     Ember.assert(`draw-control does not support GeometryCollections--convert the GeometryCollection to a FeatureCollection.`, !isGeometryCollection(this.get('geoJSON')));
     // on update of geometries, replace all drawnFeature layers with layers created from the new geoJSON
     // if we wanted to optimize, we could only fire when geometry changes, rather than when any attribute changes
-    let drawnFeatures = this.get('drawnFeatures');
+    const drawnFeatures = this.get('drawnFeatures');
     drawnFeatures.clearLayers();
 
-    let newFeatures = new L.GeoJSON(this.get('geoJSON') || null, {
+    const newFeatures = new L.GeoJSON(this.get('geoJSON') || null, {
       style: feature => this.get('polygonStyle'),
       pointToLayer: (feature, latLng) => new L.Marker(latLng, {icon: this.get('icon')})
     });
     newFeatures.eachLayer(layer => drawnFeatures.addLayer(layer));
-  },
+  }),
 
-  @on('willDestroyElement')
-  _teardown() {
-    let map = this.get('map');
+  _teardown: Ember.on('willDestroyElement', function() {
+    const map = this.get('map');
     map.off('draw');
     map.removeControl(this.get('drawControls'));
     if (this.get('geoJSON')) {
       map.removeLayer(this.get('geoJSON'));
     }
-  },
+  }),
 
   /**
    * Handler called when a new filter shape has been created

@@ -4,7 +4,6 @@ import {defaultIcon,
         defaultPolygonStyle} from '../../utils/features';
 import L                     from 'leaflet';
 import _                     from 'lodash';
-import {on}                  from 'ember-computed-decorators';
 
 /**
  * Base map class to implement a Leaflet map component.
@@ -62,9 +61,8 @@ export default Ember.Component.extend({
     }
   }),
 
-  @on('didInsertElement')
-  _initMap() {
-    let mapOptions = _.defaults({
+  _initMap: Ember.on('didInsertElement', function() {
+    const mapOptions = _.defaults({
       center: this.get('center'),
       zoom: this.get('zoom')
     }, this.get('options') || {}, {
@@ -83,7 +81,7 @@ export default Ember.Component.extend({
       this.set('map', map);
       this.set('didInsertMap', true);
     });
-  },
+  }),
 
   setBounds(layer) {
     this.get('map').setBounds(layer.getBounds());

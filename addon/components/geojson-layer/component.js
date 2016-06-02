@@ -1,7 +1,6 @@
 import Ember                     from 'ember';
 import layout                    from './template';
 import L                         from 'leaflet';
-import {on}                      from 'ember-computed-decorators';
 
 /**
  * Add a L.geoJson layer to the leaflet-map component
@@ -32,8 +31,7 @@ export default Ember.Component.extend({
   mouseEnter() {/*noop*/},
   mouseLeave() {/*noop*/},
 
-  @on('didInitAttrs')
-  _init() {
+  _init: Ember.on('didInitAttrs', function() {
     Ember.assert(`
       Component initialized without a map.
       Ensure it was declared as a contextual component w/i the leaflet-map component block scope, like so:
@@ -41,17 +39,16 @@ export default Ember.Component.extend({
           {{map.geoJSONLayer}}
         {{/leaflet-map}}`, this.get('map') instanceof L.Map);
 
-    let leafletGeoJSON = new L.GeoJSON(this.get('geoJSON') || null, {
+    const leafletGeoJSON = new L.GeoJSON(this.get('geoJSON') || null, {
       style: feature => this.get('polygonStyle'),
       pointToLayer: (feature, latLng) => new L.Marker(latLng, {icon: this.get('icon')})
     });
     this.set('leafletGeoJSON', leafletGeoJSON);
-  },
+  }),
 
-  @on('didInsertElement')
-  _setupMarker() {
-    let layer = this.get('leafletGeoJSON');
-    let map = this.get('map');
+  _setupMarker: Ember.on('didInsertElement', function() {
+    const layer = this.get('leafletGeoJSON');
+    const map = this.get('map');
 
     // binding popups must happen after the element has been inserted into the DOM
     layer.eachLayer(geoJSONLayer => {
@@ -60,7 +57,7 @@ export default Ember.Component.extend({
       geoJSONLayer.on('mousedown', () => this._mouseDown(geoJSONLayer));
       geoJSONLayer.on('click', () => this._mouseUp(geoJSONLayer));
 
-      let popupContent = this.$('._marker-component-popup').html().replace(/<!--.*-->/g, '').replace(/\s/g, '');
+      const popupContent = this.$('._marker-component-popup').html().replace(/<!--.*-->/g, '').replace(/\s/g, '');
 
       if (popupContent) {
         // don't bind popup if content isn't defined
@@ -70,15 +67,14 @@ export default Ember.Component.extend({
 
     map.addLayer(layer)
     this.get('addLayer')(layer, map);
-  },
+  }),
 
-  @on('willDestroyElement')
-  _teardown() {
-    let layer = this.get('leafletGeoJSON');
+  _teardown: Ember.on('willDestroyElement', function() {
+    const layer = this.get('leafletGeoJSON');
 
     this.get('map').removeLayer(layer);
     this.get('removeLayer')(layer, this.get('map'));
-  },
+  }),
 
   _mouseDown(geoJSONLayer) {
     this.get('mouseDown')(geoJSONLayer, this.get('map'));
