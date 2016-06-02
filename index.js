@@ -22,9 +22,11 @@ module.exports = {
     var imagesDestDir = '/assets/images';
     app.import(app.bowerDirectory + '/leaflet/dist/images/layers-2x.png', { destDir: imagesDestDir });
     app.import(app.bowerDirectory + '/leaflet/dist/images/layers.png', { destDir: imagesDestDir });
-    app.import(app.bowerDirectory + '/leaflet/dist/images/marker-icon-2x.png', { destDir: imagesDestDir });
-    app.import(app.bowerDirectory + '/leaflet/dist/images/marker-icon.png', { destDir: imagesDestDir });
+    // app.import(app.bowerDirectory + '/leaflet/dist/images/marker-icon-2x.png', { destDir: imagesDestDir });
+    // app.import(app.bowerDirectory + '/leaflet/dist/images/marker-icon.png', { destDir: imagesDestDir });
     app.import(app.bowerDirectory + '/leaflet/dist/images/marker-shadow.png', { destDir: imagesDestDir });
+
+    app.import('vendor/l_orange.svg', { destDir: imagesDestDir });
 
     app.import(app.bowerDirectory + '/leaflet-draw/dist/images/spritesheet-2x.png', { destDir: imagesDestDir });
     app.import(app.bowerDirectory + '/leaflet-draw/dist/images/spritesheet.png', { destDir: imagesDestDir });

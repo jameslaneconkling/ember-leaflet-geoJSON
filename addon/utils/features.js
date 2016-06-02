@@ -40,10 +40,10 @@ export const defaultPolygonStyle = {
 };
 
 export const defaultIcon = L.icon({
-  iconUrl: 'assets/map/l_orange.svg',
+  iconUrl: 'assets/images/l_orange.svg',
   iconSize: [30, 30],
   iconAnchor: [15, 30],
-  shadowUrl: 'assets/map/marker-shadow.png',
+  shadowUrl: 'assets/images/marker-shadow.png',
   shadowSize: [41, 41],
   shadowAnchor: [14, 41]
 });

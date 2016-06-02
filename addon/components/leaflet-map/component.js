@@ -15,9 +15,9 @@ import _                     from 'lodash';
  *    {{map.layerControl}}
  *
  *    {{map.drawControl
- *      createShape=(action updateFilterShapes)
- *      editShapes=(action updateFilterShapes)
- *      deleteShapes=(action updateFilterShapes)
+ *      createShape=(action 'updateDrawShapes')
+ *      editShapes=(action 'updateDrawShapes')
+ *      deleteShapes=(action 'updateDrawShapes')
  *      options=drawOptions
  *    }}
  *
