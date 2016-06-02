@@ -1,1 +1,1 @@
-export { default } from 'ember-leaflet-geoJSON/components/leaflet-map/component';
+export { default } from 'ember-leaflet-geo-json/components/leaflet-map/component';

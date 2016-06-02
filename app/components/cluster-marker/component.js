@@ -1,1 +1,1 @@
-export { default } from 'ember-leaflet-geoJSON/components/cluster-marker/component';
+export { default } from 'ember-leaflet-geo-json/components/cluster-marker/component';
