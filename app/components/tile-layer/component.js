@@ -1,1 +1,1 @@
-export { default } from 'ember-leaflet/components/tile-layer/component';
+export { default } from 'ember-leaflet-geoJSON/components/tile-layer/component';

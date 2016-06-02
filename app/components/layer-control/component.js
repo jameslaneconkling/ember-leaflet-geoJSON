@@ -1,1 +1,1 @@
-export { default } from 'ember-leaflet/components/layer-control/component';
+export { default } from 'ember-leaflet-geoJSON/components/layer-control/component';
