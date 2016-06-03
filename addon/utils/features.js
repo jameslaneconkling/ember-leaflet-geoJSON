@@ -32,6 +32,12 @@ export function isGeometryCollection(geoJSON = {}) {
     geoJSON.features && geoJSON.features.any(isGeometryCollection);
 }
 
+export function circleFeatureToGeoJSON(circleFeature) {
+  const pointGeoJSON = circleFeature.toGeoJSON();
+  pointGeoJSON.properties.radius = circleFeature.getRadius();
+  return pointGeoJSON;
+}
+
 export const defaultPolygonStyle = {
   color: '#FFC04C',
   weight: 4,

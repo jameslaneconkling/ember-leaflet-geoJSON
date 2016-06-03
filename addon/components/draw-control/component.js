@@ -1,8 +1,9 @@
-import Ember                   from 'ember';
-import layout                  from './template';
-import L                       from 'leaflet';
-import _                       from 'lodash';
-import {isGeometryCollection}  from '../../utils/features';
+import Ember                     from 'ember';
+import layout                    from './template';
+import L                         from 'leaflet';
+import _                         from 'lodash';
+import {isGeometryCollection,
+        circleFeatureToGeoJSON}  from '../../utils/features';
 
 /**
  * Add draw controls to a {{leaflet-map}} component.  Embed the controls w/i the maps block context
@@ -128,8 +129,12 @@ export default Ember.Component.extend({
    *                  event.layerType = The type of layer (polygon, rectangle, circle)
    */
   _createShape(event) {
+    const newShape = event.layer instanceof L.Circle ?
+      circleFeatureToGeoJSON(event.layer) :
+      event.layer.toGeoJSON();
+
     this.get('drawnFeatures').addLayer(event.layer);
-    this.get('createShape')(event.layer, this.get('drawnFeatures'), this.get('map'));
+    this.get('createShape')(newShape, this.get('drawnFeatures').toGeoJSON(), this.get('map'));
   },
 
   /**
@@ -139,7 +144,7 @@ export default Ember.Component.extend({
    *                  event.layers = A L.LayerGroup object containing all layers just edited
    */
   _editShapes(event) {
-    this.get('editShapes')(event.layers, this.get('drawnFeatures'), this.get('map'));
+    this.get('editShapes')(event.layers.toGeoJSON(), this.get('drawnFeatures').toGeoJSON(), this.get('map'));
   },
 
   /**
@@ -149,6 +154,6 @@ export default Ember.Component.extend({
    *                  event.layers = A L.LayerGroup object containing all layers just edited
    */
   _deleteShapes(event) {
-    this.get('deleteShapes')(event.layers, this.get('drawnFeatures'), this.get('map'));
+    this.get('deleteShapes')(event.layers.toGeoJSON(), this.get('drawnFeatures').toGeoJSON(), this.get('map'));
   }
 });
