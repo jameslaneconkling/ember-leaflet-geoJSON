@@ -8,9 +8,10 @@ import {isGeometryCollection}  from '../../utils/features';
  * Add draw controls to a {{leaflet-map}} component.  Embed the controls w/i the maps block context
  *  {{#leaflet-map as |map|}}
  *    {{map.drawControl
- *      createShape=(action updateFilterShapes)
- *      editShapes=(action updateFilterShapes)
- *      deleteShapes=(action updateFilterShapes)
+ *      geoJSON=geoJSON
+ *      createShape=(action 'updateFilterShapes')
+ *      editShapes=(action 'updateFilterShapes')
+ *      deleteShapes=(action 'updateFilterShapes')
  *      options=drawOptions
  *    }}
  *  {{/leaflet-map}}
