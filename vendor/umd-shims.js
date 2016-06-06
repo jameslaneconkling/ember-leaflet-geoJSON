@@ -1,2 +1,2 @@
-define('lodash', [], () => ({default: window._}));
-define('leaflet', [], () => ({default: window.L}));
+define('leaflet', [], function() { return {default: window.L}; });
+define('lodash', [], function() { return {default: window._}; });
