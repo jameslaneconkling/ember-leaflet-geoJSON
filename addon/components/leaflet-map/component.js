@@ -61,6 +61,14 @@ export default Ember.Component.extend({
     }
   }),
 
+  onClick() { /*noop*/ },
+  onMovestart() { /*noop*/ },
+  onMove() { /*noop*/ },
+  onMoveend() { /*noop*/ },
+  onZoomstart() { /*noop*/ },
+  onZoomend() { /*noop*/ },
+  onContextmenu() { /*noop*/ },
+
   _initMap: Ember.on('didInsertElement', function() {
     const mapOptions = _.defaults({
       center: this.get('center'),
@@ -77,6 +85,14 @@ export default Ember.Component.extend({
 
     Ember.run.next(() => {
       const map = L.map(this.get('elementId'), mapOptions);
+
+      map.on('click', e => this.onClick(e));
+      map.on('movestart', e => this.onMovestart(e));
+      map.on('move', e => this.onMove(e));
+      map.on('moveend', e => this.onMoveend(e));
+      map.on('zoomstart', e => this.onZoomstart(e));
+      map.on('zoomend', e => this.onZoomend(e));
+      map.on('contextmenu', e => this.onContextmenu(e));
 
       this.set('map', map);
       this.set('didInsertMap', true);
