@@ -39,7 +39,7 @@ export default Ember.Component.extend({
       style: feature => this.get('polygonStyle'),
       pointToLayer: (feature, latLng) => new L.Marker(latLng, {icon: this.get('icon')})
     });
-    this.set('geoJSONLayer', geoJSONLayer);
+    this.set('layer', geoJSONLayer);
     this.set('clusterMarkers', this.layer2clusterMarkers(geoJSONLayer));
   }),
 
@@ -51,27 +51,39 @@ export default Ember.Component.extend({
       geoJSONLayer.on('mousedown', () => this._mouseDown(geoJSONLayer));
       geoJSONLayer.on('click', () => this._mouseUp(geoJSONLayer));
 
-      const popupContent = this.$('._marker-component-popup').html().replace(/<!--.*-->/g, '').replace(/\s/g, '');
+      const popupContent = this.createPopupContent();
 
-      if (popupContent) {
+      if (popupContent.childElementCount > 0) {
         // don't bind popup if content isn't defined
         geoJSONLayer.bindPopup(popupContent);
       }
     });
 
     this.get('clusterLayer').addLayers(clusterMarkers)
-    this.get('addLayer')(this.get('geoJSONLayer'), clusterMarkers, this.get('map'));
+    this.get('addLayer')(this.get('layer'), clusterMarkers, this.get('map'));
   }),
 
   _teardown: Ember.on('willDestroyElement', function() {
     const clusterMarkers = this.get('clusterMarkers');
     this.get('clusterLayer').removeLayers(clusterMarkers);
 
-    this.get('removeLayer')(this.get('geoJSONLayer'), clusterMarkers, this.get('map'));
+    this.get('removeLayer')(this.get('layer'), clusterMarkers, this.get('map'));
   }),
 
+  createPopupContent() {
+    const popupElement = document.createElement('div');
+    let firstNode = this.element.firstChild;
+    let lastNode = this.element.lastChild;
+
+    while (firstNode) {
+      popupElement.insertBefore(firstNode, null);
+      firstNode = firstNode !== lastNode ? lastNode.parentNode.firstChild : null;
+    }
+    return popupElement;
+  },
+
   layer2clusterMarkers(leafletLayer) {
-    const clusterMarkers = [];
+    let clusterMarkers = [];
 
     leafletLayer.eachLayer(layer => {
       // NOTE - handling multigeometries is pretty naieve right now: will put one marker at the center of the entire collection.
@@ -79,9 +91,9 @@ export default Ember.Component.extend({
       const layerType = layer.feature.geometry.type;
       const markerLatLng = layerType === 'Point' ? layer.getLatLng() : layer.getBounds().getCenter();
       const clusterMarker = new L.Marker(markerLatLng, {
-        icon: this.get('icon'),
-        __featureGeom: layer,
+        icon: this.get('icon')
       });
+      clusterMarker['__featureGeom'] = layer;
 
       clusterMarkers.push(clusterMarker);
     });
