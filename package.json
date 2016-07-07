@@ -1,6 +1,6 @@
 {
   "name": "ember-leaflet-geoJSON",
-  "version": "0.0.7",
+  "version": "0.1.0",
   "description": "Yet another leaflet package, built for easy, direct compatability with geoJSON",
   "directories": {
     "doc": "doc",
