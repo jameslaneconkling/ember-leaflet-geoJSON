@@ -39,9 +39,10 @@ import _                     from 'lodash';
  *
  * @class  LeafletMapComponent
  *
- * @param {Number}           [zoom]    zoom level of map
- * @param {Array [lat, lng]} [center]  center of map as [lat, lng]
- * @param {Object}           [options] additional options for map initialization.  see leaflet docs: http://leafletjs.com/reference.html#map-options
+ * @param {Number}           [zoom]          zoom level of map
+ * @param {Array [lat, lng]} [center]        center of map as [lat, lng]
+ * @param {Object}           [options]       additional options for map initialization.  see leaflet docs: http://leafletjs.com/reference.html#map-options
+ * @param {Action}           [onContextMenu] map contextmenu event
  */
 export default Ember.Component.extend({
   layout,
