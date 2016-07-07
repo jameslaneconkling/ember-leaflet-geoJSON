@@ -1,0 +1,1 @@
+export { default } from 'ember-leaflet-geo-json/components/coordinates-popup/component';

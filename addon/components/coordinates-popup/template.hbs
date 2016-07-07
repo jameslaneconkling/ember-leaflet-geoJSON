@@ -1,0 +1,25 @@
+{{yield}}
+
+<table class="coordinates-popup-table">
+  <tr>
+    <td class="coordinates-popup-label">Lat/Lng</td>
+    <td colspan="1">{{input focus-out='setLat' enter='setLat' value=(readonly lat)}}</td>
+    <td colspan="1">{{input focus-out='setLng' enter='setLng' value=(readonly lng)}}</td>
+  </tr>
+
+  <tr>
+    <td class="coordinates-popup-label">DMS</td>
+    <td colspan="1">{{input focus-out='setDMSLat' enter='setDMSLat' value=(readonly dms.[0])}}</td>
+    <td colspan="1">{{input focus-out='setDMSLng' enter='setDMSLng' value=(readonly dms.[1])}}</td>
+  </tr>
+
+  <tr>
+    <td class="coordinates-popup-label">MGRS</td>
+    <td colspan="2">{{input focus-out='setMGRS' enter='setMGRS' value=(readonly mgrs)}}</td>
+  </tr>
+
+  <tr>
+    <td class="coordinates-popup-label">UTM</td>
+    <td colspan="2">{{input focus-out='setUTM' enter='setUTM' value=(readonly utm)}}</td>
+  </tr>
+</table>

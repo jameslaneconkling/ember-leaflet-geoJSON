@@ -30,5 +30,11 @@ module.exports = {
 
     app.import(app.bowerDirectory + '/leaflet-draw/dist/images/spritesheet-2x.png', { destDir: imagesDestDir });
     app.import(app.bowerDirectory + '/leaflet-draw/dist/images/spritesheet.png', { destDir: imagesDestDir });
+
+    app.import('vendor/geodesy/vector3d.js');
+    app.import('vendor/geodesy/latlon-ellipsoidal.js');
+    app.import('vendor/geodesy/dms.js');
+    app.import('vendor/geodesy/mgrs.js');
+    app.import('vendor/geodesy/utm.js');
   }
 };
