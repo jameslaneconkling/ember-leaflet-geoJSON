@@ -51,20 +51,8 @@ export default Ember.Component.extend({
         {{/leaflet-map}}`, this.get('map') instanceof L.Map);
 
     const map = this.get('map');
-    const drawnFeatures = new L.GeoJSON(this.get('geoJSON') || null, {
-      style: feature => this.get('polygonStyle'),
-      pointToLayer: (feature, latLng) => new L.Marker(latLng, {icon: this.get('icon')})
-    });
-    const bounds = drawnFeatures.getBounds();
-    if (bounds.isValid()) {
-      this.get('map').fitBounds(bounds);
-    }
-
-    const drawOptions = {
-      edit: {
-        featureGroup: drawnFeatures
-      },
-      draw: _.defaultsDeep(this.get('options') || {}, {
+    const drawOptions = _.defaultsDeep(this.get('options') || {}, {
+      draw: {
         polyline: {
           shapeOptions: this.get('polygonStyle')
         },
@@ -81,13 +69,27 @@ export default Ember.Component.extend({
           icon: this.get('icon'),
           repeatMode: true
         }
-      })
-    };
+      },
+      edit: {
+        remove: true,
+        buffer: null
+      }
+    });
+
+    const drawnFeatures = this.geoJSON2Layer(this.get('geoJSON'), drawOptions);
+    drawOptions.set('edit.featureGroup', drawnFeatures);
+
+    const bounds = drawnFeatures.getBounds();
+    if (bounds.isValid()) {
+      this.get('map').fitBounds(bounds);
+    }
+
     const drawControls = new L.Control.Draw(drawOptions);
 
     this.setProperties({
       drawControls,
-      drawnFeatures
+      drawnFeatures,
+      drawOptions
     });
 
     map.on('draw:created', (event) => this._createShape(event));
@@ -105,10 +107,7 @@ export default Ember.Component.extend({
     const drawnFeatures = this.get('drawnFeatures');
     drawnFeatures.clearLayers();
 
-    const newFeatures = new L.GeoJSON(this.get('geoJSON') || null, {
-      style: feature => this.get('polygonStyle'),
-      pointToLayer: (feature, latLng) => new L.Marker(latLng, {icon: this.get('icon')})
-    });
+    const newFeatures = this.geoJSON2Layer(this.get('geoJSON'), this.get('drawOptions'));
     newFeatures.eachLayer(layer => drawnFeatures.addLayer(layer));
   }),
 
@@ -120,6 +119,17 @@ export default Ember.Component.extend({
       map.removeLayer(this.get('geoJSON'));
     }
   }),
+
+  geoJSON2Layer(geoJSON, drawOptions) {
+    const featureStyle = (feature) => {
+      const featureType = feature.geometry.type.toLowerCase();
+      return drawOptions.get(`draw.${featureType}.shapeOptions`);
+    };
+    return new L.GeoJSON(geoJSON || null, {
+      style: featureStyle,
+      pointToLayer: (feature, latLng) => new L.Marker(latLng, {icon: this.get('icon')})
+    });
+  },
 
   /**
    * Handler called when a new filter shape has been created
